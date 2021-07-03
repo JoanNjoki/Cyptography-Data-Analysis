@@ -7,8 +7,8 @@ Author: **Joan Njoki**
 ---
 ---
 ## Purpose
- >> Identify the individuals that are most likely to click on the ad
----
+> Mapping out individuals most likely to click on the ad using different visualization techniques and summary statistics
+ ---
 ## Methods Used
  * Exploratory Data Analysis 
 ---
@@ -17,7 +17,7 @@ Author: **Joan Njoki**
  
 ---
 ## Project Description
- > A Kenyan entrepreneur has started an online cryptography course online and would to identify individuals that are mostly likely to click on the ads based on the data she collected a while back  before posting in her blog. 
+ > A Kenyan entrepreneur has started an online cryptography course online and would like to identify individuals that are mostly likely to click on the ads based on the data collected. 
 ---
 ## Featured Notebooks
 > R Markdown in HTML format
