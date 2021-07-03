@@ -1,0 +1,298 @@
+---
+title: "Cyptography Course Data Analysis"
+author: "Joan Mwangi"
+date: "7/3/2021"
+output: html_document
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+# **Online Cryptography Course Data Analysis**
+
+## **Defining the Analytic Question**
+
+Identify individuals most likely to click on her ads
+
+## **Defining the metric of success**
+
+Mapping out individuals most likely to click on the ad using different
+visualization techniques and summary statistics,
+
+## **Understanding the context**
+
+A Kenyan entrepreneur has started an online cryptography course online
+and would to identify individuals that are mostly likely to click on the
+ads based on the data she collected a while back before posting in her
+blog.
+
+## **Recording the experimental design**
+
+-   Loading the dataset
+
+-   Cleaning the data
+
+-   Performing necessary exploratory data analysis
+
+-    Making conclusions and recommendations based on the findings
+    gotten.
+
+## **Data Relevance**
+
+This dataset has relevant variables such as city, country, daily time
+spent, daily internet usage, time stamp etc which will aid in giving
+insights on the type of individual most likely to click on the ad.
+
+------------------------------------------------------------------------
+
+## **Loading the data**
+
+```{r}
+advertising <- read.csv("C:/Users/jojos/Downloads/advertising (2).csv")
+#previewing the first  rows `r head(advertising)`
+#Previewing the structure of the dataset 
+#`r str(advertising)`
+#Checking the number of rows and columns within the dataset 
+#`r dim(advertising)`
+
+```
+
+## **Data Cleaning**
+
+```{r}
+#There are `r ColSums(is.na(advertising)) null values`
+#There arg `r advertising[duplicated(advertising),] rows`
+```
+
+```{r}
+names(advertising)[names(advertising) == "Male"] <- "Gender"
+colnames(advertising)
+```
+
+```{r}
+boxplot(advertising$Daily.Time.Spent.on.Site,advertising$Age,advertising$Area.Income)
+```
+
+\#Area income is the only column with outliers, however they will not be
+dropped as the values below the interquartile range don't fall below 0,
+thus essential in giving further insights in our data analysis.
+
+# **Implementing the solution**
+
+## **Univariate Analysis**
+
+## Measures of Central Tendency
+
+### Mean
+
+```{r}
+ mean(advertising$Daily.Time.Spent.on.Site)
+mean(advertising$Age)
+mean(advertising$Area.Income)
+mean(advertising$Daily.Internet.Usage)
+```
+
+### Variance
+
+```{r}
+ var(advertising$Daily.Time.Spent.on.Site)
+var(advertising$Age)
+var(advertising$Area.Income)
+var(advertising$Daily.Internet.Usage)
+```
+
+### Standard Deviation
+
+```{r}
+ sd(advertising$Daily.Time.Spent.on.Site)
+sd(advertising$Age)
+sd(advertising$Area.Income)
+sd(advertising$Daily.Internet.Usage)
+```
+
+### Range
+
+```{r}
+ range(advertising$Daily.Time.Spent.on.Site)
+range(advertising$Age)
+range(advertising$Area.Income)
+range(advertising$Daily.Internet.Usage)
+```
+
+\>The mean, variance, and standard deviations of the numerical columns:
+
+-   Daily Time Spent on Site: Mean -- 65.0,standard
+    deviation-15.85,variance - 251.33,range - 3.60,91.43
+
+-   Age: Mean - 36, standard deviation - 8.79, variance-77.186, range -
+    1961
+
+-   Area Income: Mean- 55000, standard deviation - 13414.63, range-
+    179952406,range - 13996.5
+
+-   Internet Usage : Mean - 180, standard deviation - 4390, variance -
+    19274.5, range- 104.78
+
+### Bar plots
+
+```{r}
+barplot_clicked <- barplot(table(advertising$Clicked.on.Ad))
+barplot_clicked
+```
+
+*The frequency distribution of individuals who clicked on the Ad are
+equivalent with each category having 500.*
+
+*From the bar plot, we can see that females were more with a frequency
+distribution of 581 compared to males with 481.*
+
+### Histograms
+
+```{r}
+ age_hist <- hist(advertising$Age)
+```
+
+```{r}
+internetusage_hist <- hist(advertising$Daily.Internet.Usage)
+internetusage_hist
+###Majority of the individuals record an internet usage of above 150
+```
+
+```{r}
+daily_time_hist <- hist(advertising$Daily.Time.Spent.on.Site)
+daily_time_hist
+#The graph is skewed to the right, with majority spending time more than 80
+```
+
+```{r}
+ area_income_hist <- hist(advertising$Area.Income)
+ area_income_hist
+ #The graph is skewed to the left, with majority of the area income ranging from 5000 to 8000
+```
+
+### Quartiles
+
+```{r}
+quantile(advertising$Age)
+quantile(advertising$Daily.Time.Spent.on.Site)
+quantile(advertising$Area.Income)
+quantile(advertising$Daily.Internet.Usage)
+```
+
+------------------------------------------------------------------------
+
+## **Bi-variate Analysis**
+
+### Correlation Matrix
+
+```{r}
+cor(advertising[,unlist(lapply(advertising,is.numeric))])
+```
+
+> From the correlation matrix we can deduce the following:
+
+> Variables that are positively correlated are:
+>
+> -   Daily internet usage and age
+> -   Clicked on ad and Age
+> -   Daily time spent on the site and daily internet usage.
+>
+> Variables that are negatively correlated are:
+>
+> -   *Clicked on ad and daily internet usage*
+>
+> -   Age and daily internet usage
+>
+> -   Clicked on Ad and area income
+>
+> -   Age and daily time spent on site
+
+### Loading the tidyverese library to the environment
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+ggplot(data=advertising) + geom_boxplot(mapping=aes(x=reorder(x=Clicked.on.Ad,Daily.Time.Spent.on.Site,FUN=median),y=Daily.Time.Spent.on.Site))+ coord_flip()
+```
+
+*plotting a box plot to show the relationship between daily time spent
+on the ads and clicking on ad*
+
+*The distribution of the time spent on the site around 45 and 90 are
+individuals that didn't click on the ad which is higher than those that
+actually clicked on the ad with a distribution of around 30 and 90.*
+
+### Scatter plots
+
+```{r}
+plot(advertising$Daily.Internet.Usage, advertising$Clicked.on.Ad, xlab="Daily Internet Usage", ylab="Clicked.on.Ad")
+
+```
+
+*From the scatter,majority of the individuals that clicked on the ad
+spent less daily internet usage with values ranging from 100 and 150
+compared to those that had ample internet usage of 200 to 250*
+
+```{r}
+plot(advertising$Daily.Time.Spent.on.Site, advertising$Clicked.on.Ad, xlab="Daily time spent on site", ylab="Clicked.on.Ad")
+
+```
+
+*Just as seen in the scatter plot for daily internet usage, individuals
+that spend less time on the site are more likely to click on the ad with
+time less than 40 compared to those that spent more time on the site
+with majority ranging from 70 to 80*
+
+```{r}
+plot(advertising$Area.Income, advertising$Clicked.on.Ad, xlab="Area Income", ylab="Clicked.on.Ad")
+
+```
+
+*Individuals with an area income of around 5000 and 7500 didn't click on
+the ad, however this cannot be clearly stated for those that did click
+on the ad.*
+
+```{r}
+plot(advertising$Age, advertising$Clicked.on.Ad, xlab="Age", ylab="Clicked.on.Ad")
+
+```
+
+*individuals that are 20 to 50 are more likely not to click on the ad,
+however it is unclear on the age for those that actually clicked on the
+ad.*
+
+*The distribution of the time spent on the site around 45 and 90 are
+individuals that didn't click on the ad which is higher than those that
+actually clicked on the ad with a distribution of around 30 and 90.*
+
+```{r}
+plot(advertising$Age, advertising$Daily.Time.Spent.on.Site, xlab="Age", ylab="Daily Time Spent on Site")
+```
+
+# Conclusion
+
+> Based on the analysis:
+
+-   When consumers spend more on internet usage doesn't necessary mean
+    that they will click on the ad
+
+-   When time spent on the ad is less than 30 they are more likely to
+    click on the ad compared to those that spent a long time on the
+    internet
+
+-    The higher the area income the lower the chances an individual will
+    click on the ad
+
+# Recommendation
+
+I would recommend that the ads should target individuals whose area
+income range from 3000, has spent less than 40 units on the internet
+which could prompt the potential client to click on the ad, and less
+internet usage(less than 150). Intuitively, this makes sense as
+individuals that spend less time both on usage and time might have
+garnered interest probably if it was the first ad they came across or
+were briefly browsing the net and the ad suddenly popped up. Targeting
+older people (50 and above) as seen from the correlation matrix, are
+more likely to spend less time on the site.
